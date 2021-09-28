@@ -27,16 +27,16 @@ SET the_geom = ST_WrapX(the_geom, 0, 360)
 -- 5. Create new table for dissolved geometry
 CREATE TABLE high_seas_0_360_01 (the_geom geometry);
 
--- 5. Dissolve the resulting polygons
+-- 6. Dissolve the resulting polygons
 INSERT INTO high_seas_0_360_01
 SELECT ST_UnaryUnion(the_geom) AS the_geom FROM high_seas_0_360_00
  
--- 6. Fix potential invalid geometry (quality control step)
+-- 7. Fix potential invalid geometry (quality control step)
 UPDATE high_seas_0_360_01
 SET the_geom=ST_CollectionExtract(ST_MakeValid(the_geom),3)
 WHERE ST_IsValid(the_geom) = false;
 
--- 7. Check the final output, drop the temporary table and rename the final product
+-- 8. Check the final output, drop the temporary table and rename the final product
 DROP TABLE high_seas_0_360_00;
 
 ALTER TABLE high_seas_0_360_01
